@@ -10,8 +10,11 @@ class Base(DeclarativeBase):
 class Spot(Base):
     __tablename__ = "spots"
 
-    id : Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    surfline_id: Mapped[str]
     name: Mapped[str]
+    region: Mapped[str]
+    country: Mapped[str]
     exposition: Mapped[str]
     sheltered_from: Mapped[Optional[str]] = mapped_column(server_default=None)
 
@@ -22,10 +25,11 @@ class Swell(Base):
     __tablename__ = "swells"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
+    swell_at: Mapped[datetime]
     height: Mapped[int]
     direction: Mapped[int]
     period: Mapped[int]
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[Optional[datetime]] = mapped_column(server_default=func.now())
 
     def __repr__(self) -> str:
         return F"<size: {self.height}, direction: {self.direction}, period: {self.period}, created_at: {self.created_at}"
@@ -34,9 +38,10 @@ class Wind(Base):
     __tablename__ = "winds"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
+    wind_at: Mapped[datetime]
     speed: Mapped[int]
     direction: Mapped[int]
-    created_at: Mapped[datetime] = mapped_column(server_default=func.now())
+    created_at: Mapped[Optional[datetime]] = mapped_column(server_default=func.now())
 
     def __repr__(self) -> str:
         return F"<speed: {self.strength}, direction: {self.direction}, created_at: {self.created_at}"
@@ -45,10 +50,12 @@ class Report(Base):
     __tablename__ = "reports"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
+    report_at: Mapped[datetime]
     spot_id: Mapped[int] = mapped_column(ForeignKey("spots.id"))
     swell_id: Mapped[int] = mapped_column(ForeignKey("swells.id"))
     wind_id: Mapped[int] = mapped_column(ForeignKey("winds.id"))
-    rating: Mapped[str]
-    comment: Mapped[str]
+    tide: Mapped[str]
+    rating: Mapped[int]
+    comment: Mapped[str] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
     updated_at: Mapped[datetime] = mapped_column(server_default=func.now())
