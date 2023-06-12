@@ -27,8 +27,12 @@ class Swell(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
     swell_at: Mapped[datetime]
     height: Mapped[int]
-    direction: Mapped[int]
+    direction: Mapped[float]
+    directionMin: Mapped[float]
     period: Mapped[int]
+    power: Mapped[float]
+    impact: Mapped[int]
+    optimalScore: Mapped[int]
     created_at: Mapped[Optional[datetime]] = mapped_column(server_default=func.now())
 
     def __repr__(self) -> str:
@@ -39,12 +43,22 @@ class Wind(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
     wind_at: Mapped[datetime]
-    speed: Mapped[int]
-    direction: Mapped[int]
+    speed: Mapped[float]
+    gust: Mapped[float]
+    direction: Mapped[float]
+    directionType: Mapped[str]
     created_at: Mapped[Optional[datetime]] = mapped_column(server_default=func.now())
 
     def __repr__(self) -> str:
         return F"<speed: {self.strength}, direction: {self.direction}, created_at: {self.created_at}"
+    
+class Tide(Base):
+    __tablename__ = "tides"
+
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement="auto")
+    tide_at: Mapped[datetime]
+    height: Mapped[float]
+    type: Mapped[str]
 
 class Report(Base):
     __tablename__ = "reports"
@@ -54,7 +68,7 @@ class Report(Base):
     spot_id: Mapped[int] = mapped_column(ForeignKey("spots.id"))
     swell_id: Mapped[int] = mapped_column(ForeignKey("swells.id"))
     wind_id: Mapped[int] = mapped_column(ForeignKey("winds.id"))
-    tide: Mapped[str]
+    tide_id: Mapped[str]
     rating: Mapped[int]
     comment: Mapped[str] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
