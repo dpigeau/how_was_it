@@ -22,17 +22,18 @@ def get_session() -> Session:
 def read_all_spots(session: Session = Depends(get_session)):
     return session.query(models.Spot).all()
 
-@app.get("/spots/byname/")
-def read_spot(spot_name: str, session: Session = Depends(get_session)):
-    return session.query(models.Spot).filter(models.Spot.name == spot_name).all()
+# @app.get("/spots/byname/")
+# def read_spot(spot_name: str, session: Session = Depends(get_session)):
+#     return session.query(models.Spot).filter(models.Spot.name == spot_name).all()
 
 @app.post("/spots/add/")
-def add_spot(name: str, region: str, country: str, exposition: str, sheltered_from: Optional[str] = None, session: Session = Depends(get_session)):
+def add_spot(surfline_id:str, name: str, region: str, country: str, exposition: str, sheltered_from: Optional[str] = None, session: Session = Depends(get_session)):
     exists = session.query(models.Spot).filter(models.Spot.name == name, models.Spot.region == region).first() is not None
     if exists:
         raise Exception("This spot has already been added")
     
     new_spot = models.Spot(
+        surfline_id = surfline_id,
         name = name,
         region = region,
         country = country,
@@ -42,6 +43,21 @@ def add_spot(name: str, region: str, country: str, exposition: str, sheltered_fr
     session.add(new_spot)
     session.commit()
 
+# Swells
+@app.get("/swells")
+def read_all_swells(session: Session = Depends(get_session)):
+    return session.query(models.Swell).all()
+
+# Winds
+@app.get("/winds")
+def read_all_swells(session: Session = Depends(get_session)):
+    return session.query(models.Wind).all()
+
+# Tides
+@app.get("/tides")
+def read_all_swells(session: Session = Depends(get_session)):
+    return session.query(models.Tide).all()
+
 # Reports
 @app.get("/reports")
 def read_all_reports(session: Session = Depends(get_session)):
@@ -49,7 +65,7 @@ def read_all_reports(session: Session = Depends(get_session)):
 
 @app.get("/reports/add/")
 def add_report(
-    spot_id: int,
+    spot_id: str,
     rating: str,
     comment: Optional[str] = None,
     report_at: Optional[datetime] = datetime.today(),
@@ -67,6 +83,7 @@ def add_report(
     tide = models.Tide(**forecast.tide())
     session.add(tide)
 
+    session.commit()
     new_report = models.Report(
         report_at = report_at,
         spot_id = spot_id,

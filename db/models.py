@@ -47,6 +47,7 @@ class Wind(Base):
     gust: Mapped[float]
     direction: Mapped[float]
     directionType: Mapped[str]
+    optimalScore: Mapped[int]
     created_at: Mapped[Optional[datetime]] = mapped_column(server_default=func.now())
 
     def __repr__(self) -> str:

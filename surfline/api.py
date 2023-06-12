@@ -1,7 +1,7 @@
 from typing import Dict
 import requests
 from datetime import datetime
-from utils import get_nearest_hour_ts
+from surfline.utils import get_nearest_hour_ts
 import os
 
 BASE_URL = "https://services.surfline.com/kbyg/spots/forecasts/"

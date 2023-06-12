@@ -1,6 +1,5 @@
-import requests
 from datetime import datetime
-from api import get_forecast
+from surfline.api import get_forecast
 from dataclasses import dataclass
 
 @dataclass
