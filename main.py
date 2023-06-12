@@ -5,8 +5,10 @@ from db.database import engine, SessionLocal
 from typing import Optional
 from datetime import datetime
 
-from swell.utils import get_swell
-from wind.utils import get_wind
+# from swell.utils import get_swell
+# from wind.utils import get_wind
+
+from surfline.surflineForecast import SurflineForecast
 
 
 app = FastAPI()
@@ -53,19 +55,28 @@ def read_all_reports(session: Session = Depends(get_session)):
 def add_report(
     spot_id: int,
     rating: str,
-    session: Session = Depends(get_session),
     comment: Optional[str] = None,
     report_at: Optional[datetime] = datetime.today(),
+    session: Session = Depends(get_session),
 ):
     
-    swell_id = get_swell(spot_id, report_at, session)
-    wind_id = get_wind(spot_id, report_at, session)
+    forecast = SurflineForecast(spot_id, report_at)
+    
+    swell = models.Swell(**forecast.swell())
+    session.add(swell)
+
+    wind = models.Wind(**forecast.wind())
+    session.add(wind)
+
+    tide = models.Tide(**forecast.tide())
+    session.add(tide)
 
     new_report = models.Report(
         report_at = report_at,
         spot_id = spot_id,
-        swell_id = swell_id,
-        wind_id = wind_id,
+        swell_id = swell.id,
+        wind_id = wind.id,
+        tide_id = tide.id,
         rating = rating,
         comment = comment,
     )
