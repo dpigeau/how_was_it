@@ -5,11 +5,7 @@ from db.database import engine, SessionLocal
 from typing import Optional
 from datetime import datetime
 
-# from swell.utils import get_swell
-# from wind.utils import get_wind
-
 from surfline.surflineForecast import SurflineForecast
-
 
 app = FastAPI()
 models.Base.metadata.create_all(engine)

@@ -68,7 +68,7 @@ class Report(Base):
     spot_id: Mapped[int] = mapped_column(ForeignKey("spots.id"))
     swell_id: Mapped[int] = mapped_column(ForeignKey("swells.id"))
     wind_id: Mapped[int] = mapped_column(ForeignKey("winds.id"))
-    tide_id: Mapped[str]
+    tide_id: Mapped[str]  = mapped_column(ForeignKey("tides.id"))
     rating: Mapped[int]
     comment: Mapped[str] = mapped_column(nullable=True)
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
