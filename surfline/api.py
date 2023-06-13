@@ -1,12 +1,15 @@
-from typing import Dict
-import requests
-from datetime import datetime
-from surfline.utils import get_nearest_hour_ts
 import os
+from datetime import datetime
+from typing import Dict
+
+import requests
+
+from surfline.utils import get_nearest_hour_ts
 
 BASE_URL = "https://services.surfline.com/kbyg/spots/forecasts/"
 
-def get_forecast(type:str, spot_id: str, timestamp: datetime) -> Dict:
+
+def get_forecast(type: str, spot_id: str, timestamp: datetime) -> Dict:
     params = {
         "spotId": spot_id,
         "days": 1,
@@ -19,11 +22,12 @@ def get_forecast(type:str, spot_id: str, timestamp: datetime) -> Dict:
     for f in forecasts:
         if f["timestamp"] == unix_timestamp:
             return f
-    
+
     return None
 
-if __name__=="__main__":
-    spot_id = "604f9d394046841199fe5d9b" #Llandudno
+
+if __name__ == "__main__":
+    spot_id = "604f9d394046841199fe5d9b"  # Llandudno
     timestamp = datetime.now()
 
     print(get_forecast("wave", spot_id, timestamp))
